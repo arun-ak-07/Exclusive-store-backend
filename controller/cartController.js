@@ -59,4 +59,36 @@ const getCart = async(req,res) => {
     }
 }
 
-module.exports = { addItem, getCart };
+const removeItem = async(req,res) => {
+    try {
+
+        const { userId, productId } = req.body;
+
+        if(!userId || !productId){
+            return res.status(400).json({ message: 'Incomplete data provided' }); 
+        }
+
+        const cartExist = await Cart.findOne({ userId });
+
+        if(!cartExist){
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+        
+        const itemIndex = cartExist.items.findIndex(item => item.productId.toString() === productId);
+
+        if(itemIndex >= 0){
+            cartExist.items.splice(itemIndex, 1);
+            await cartExist.save();
+        } else {
+            return res.status(404).json({ message: 'Item not found in the cart' });  
+        }
+
+        return res.status(200).json({ message: 'Item removed from cart successfully' });
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+}
+
+module.exports = { addItem, getCart, removeItem };
