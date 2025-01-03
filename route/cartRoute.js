@@ -5,7 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 const route = express.Router();
 
 route.put('/addItem', authMiddleware,addItem)
-route.get('/getCart', getCart)
-route.delete('/removeItem', removeItem)
+route.get('/getCart', authMiddleware,getCart)
+route.delete('/removeItem', authMiddleware,removeItem)
 
 module.exports = route;

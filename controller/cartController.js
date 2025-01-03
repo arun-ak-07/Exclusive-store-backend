@@ -2,13 +2,14 @@ const Cart = require('../models/cartModel');
 
 const addItem = async (req, res) => {
     try {
-        const { userId, productId, name, price, image, quantity } = req.body;
+        const userId = req.user._id
+        const { productId, name, price, image, quantity } = req.body;
 
         if (!userId || !productId || !name || !price || !image || !quantity) {
             return res.status(400).json({ message: 'Incomplete data provided' });
         }
 
-        const cart = await Cart.findOne({ userId });
+        const cart = await Cart.findOne({ userId:userId });
 
         if (cart) {
 
@@ -39,7 +40,7 @@ const addItem = async (req, res) => {
 const getCart = async(req,res) => {
     try {
 
-        const { userId } = req.body;
+        const userId = req.user._id
 
         if(!userId){
             return res.status(400).json({ message: 'No user provided' });
@@ -62,7 +63,8 @@ const getCart = async(req,res) => {
 const removeItem = async(req,res) => {
     try {
 
-        const { userId, productId } = req.body;
+        const { productId } = req.body;
+        const userId = req.user._id
 
         if(!userId || !productId){
             return res.status(400).json({ message: 'Incomplete data provided' }); 
