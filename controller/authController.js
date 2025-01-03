@@ -62,7 +62,7 @@ const signIn = async(req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        const token = generateTokensAndCookies(user)
+        const token = generateTokensAndCookies(user, res)
 
         return res.status(200).json({ token, message : 'User login successful' });
 
@@ -74,6 +74,17 @@ const signIn = async(req, res) => {
     }
 }
 
+const signOut = async(req, res) => {
+    try {
+        res.clearCookie('token', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+
+        return res.status(200).json({ message: 'User logged out successfully' });
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({ message: 'An error occurred during logout' });
+    }
+}
+
 module.exports = {
-    signUp,signIn
+    signUp,signIn,signOut
 }
