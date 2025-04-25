@@ -13,7 +13,7 @@ const signUp = async(req,res) => {
         })
 
         if(userExists) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: 'email already exists' });
         }
         
         const user = new User({
@@ -24,7 +24,7 @@ const signUp = async(req,res) => {
 
         await user.save();
 
-        const token = generateTokensAndCookies(user)
+        const token = generateTokensAndCookies(user, res)
 
         return res.status(200).json({token, message : 'User registration successful' });
 
